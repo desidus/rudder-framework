@@ -5,18 +5,16 @@ namespace Desidus\Rudder;
 class App
 {
     private static $appPath;
-    private static $publicPath;
     private static $request;
 
     /**
      * Setta la public e richiama le routes
      */
-    public static function load($appPath, $publicPath)
+    public static function load($appPath)
     {
         self::$appPath = $appPath;
-        self::$publicPath = $publicPath;
 
-        $dotenv = new \Dotenv\Dotenv($publicPath);
+        $dotenv = new \Dotenv\Dotenv(self::$appPath);
         $dotenv->load();
 
         require_once Route::path();
@@ -33,14 +31,6 @@ class App
 
         return Response::send( $request, $responseData );
     }
-
-    /**
-     * Ritorna il path publico
-     */
-     public static function publicPath() 
-     {
-         return self::$publicPath;
-     }
 
      /**
       * Ritorna il path dell'applicazione
