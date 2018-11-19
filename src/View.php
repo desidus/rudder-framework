@@ -25,6 +25,10 @@ class View
     {
         $file = self::path() . $name;
 
+        $data = array_merge($data, [
+            'microdata' => SEO::resolve()
+        ]);
+        
         if(file_exists($file)) {
             ob_start();
             extract($data, EXTR_SKIP);

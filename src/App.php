@@ -18,6 +18,8 @@ class App
         $dotenv->load();
 
         require_once Route::path();
+        
+        setlocale(LC_TIME, getenv('APP_LANG'));
     }
 
     /**
