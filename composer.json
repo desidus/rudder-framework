@@ -1,0 +1,19 @@
+{
+    "name": "desidus/rudder-framework",
+    "description": "Small tools for routing and microdata",
+    "type": "library",
+    "require": {
+        "vlucas/phpdotenv": "^2.5"
+    },
+    "authors": [
+        {
+            "name": "Desidus",
+            "email": "develop@desidus.it"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Desidus\\Rudder": "src/"
+        }
+    }
+}
