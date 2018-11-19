@@ -17,19 +17,19 @@ class Request
 	{
 		$this->method = $_SERVER['REQUEST_METHOD'];
 		$this->ajax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-		$this->url = $this->getCurrentUrl();
-		$this->uri = $this->getCurrentUri();
+		$this->url = self::getCurrentUrl();
+		$this->uri = self::getCurrentUri();
 	}
 
 	/**
 	 * Get URI from Request
 	 */
-	public function getCurrentUrl()
+	public static function getCurrentUrl()
 	{
 		return (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 	}
 
-	public function getCurrentUri()
+	public static function getCurrentUri()
 	{
 		$basepath = implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/';
 		$uri = substr($_SERVER['REQUEST_URI'], strlen($basepath));

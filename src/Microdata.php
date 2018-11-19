@@ -52,7 +52,11 @@ class Microdata {
     public function setLang($jsonLDLang, $openGraphLang) 
     {
         $this->lang = $openGraphLang;
-        $this->setJSONLD('inLanguage', $jsonLDLang);
+        $this->setJSONLD('inLanguage', [
+            '@type' => 'Language',
+            'name' => $jsonLDLang,
+            'alternateName' => $openGraphLang
+        ]);
         $this->setOpenGraph('og:locale', $openGraphLang);
     }
 
@@ -165,8 +169,8 @@ class Microdata {
         } 
         return $this->jsonld_attributes;
     }
-    public function getJSONLDtoJSON() { 
-        return json_encode($this->getJSONLD(),  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES /*| JSON_PRETTY_PRINT*/);
+    public function getJSONLDtoJSON($pretty = false) { 
+        return json_encode($this->getJSONLD(),  $pretty ? JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT : JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
     public function getOpenGraph() {
