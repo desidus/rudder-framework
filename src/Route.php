@@ -16,13 +16,19 @@ class Route
     private static $missingCallback;
 
     /**
-     * Azioni settate dal file routes.php
+     * Azioni di routing
      * @var Array
      */
     private static $actions = [
         'GET' => [],
         'POST' => []
     ];
+
+    /**
+     * Middlewares definiti
+     * @var Array
+     */
+    private static $middlewares = [];
 
     /**
      * path delle routes
@@ -37,6 +43,8 @@ class Route
      */
     public static function resolve($request)
     {
+        self::resolveMiddlewares($request);
+
         $method = $request->method;
         $uri = $request->uri;
         $action = array_key_exists($uri, self::$actions[$method]) ? self::$actions[$method][$uri] : null;
@@ -45,9 +53,35 @@ class Route
             return ($callback = self::$missingCallback) ? $callback($request) : null;
 
         if(gettype($action) == 'string')
-            return self::resolveClass($action, $request);
+            return self::resolveClass('App\\Controllers\\' . $action, $request);
 
         return $action($request);
+    }
+
+    /**
+     * Applica i middlewares
+     */
+    public static function resolveMiddlewares($request)
+    {
+        foreach (self::$middlewares as $middleware) 
+        {
+            $checked = false;
+            if(is_string($middleware['check']))
+            {
+                $class = 'App\\Middlewares\\' . $middleware['check'];
+                $class = new $class();
+                $checked = $class->handle($request);
+            }
+            else 
+            {
+                $checked = $middleware['check']($request);
+            }
+            
+            if ($checked) 
+            {
+                $middleware['callback']();
+            }
+        }  
     }
 
     /**
@@ -86,6 +120,17 @@ class Route
     public static function post($uri, $resolve)
     {
         self::addAction('POST', $uri, $resolve);
+    }
+
+    /**
+     * Setto un'action di tipo POST
+     */
+    public static function middleware($middleware, $callback)
+    {
+        array_push(self::$middlewares, [
+            'check' => $middleware, 
+            'callback' => $callback
+        ]);
     }
 
     /**
