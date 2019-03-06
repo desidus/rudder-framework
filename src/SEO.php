@@ -25,13 +25,18 @@ class SEO
 
         foreach ($seo as $regexp => $callback) 
         {
-            if (@preg_match($regexp, '') === FALSE) {
-                if ($regexp == $uri) {
+            if (preg_match($regexp, '')) 
+            {
+                if ($regexp == $uri) 
+                {
                     return $callback();
                 }
-            } else {
+            } 
+            else 
+            {
                 $matches = [];
                 preg_match($regexp, $uri, $matches, PREG_OFFSET_CAPTURE);
+                
                 if (count($matches) && !empty($matches[1][0])) 
                 {
                     return $callback($matches[1][0]);

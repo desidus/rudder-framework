@@ -16,14 +16,16 @@ class Response
 
     public static function send($request, $data)
     {
-        $bDataString = is_string($data);
-        
-        if($request->ajax || self::$isJson || !$bDataString)
-            header('Content-Type: application/json');
-        else
+        if (is_string($data))
+        {
             header('Content-Type: text/html');
-
-        echo $bDataString ? $data : json_encode($data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
+            echo $data;
+        }
+        else
+        {
+            header('Content-Type: application/json');
+            echo json_encode($data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
+        }
     }
 
 }

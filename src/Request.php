@@ -16,7 +16,12 @@ class Request
 	function __construct()
 	{
 		$this->method = $_SERVER['REQUEST_METHOD'];
-		$this->ajax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+		
+		$this->ajax = 
+			( isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+			|| preg_match('/application\/json/i', $_SERVER['HTTP_ACCEPT']) 
+		;
+		
 		$this->url = self::getCurrentUrl();
 		$this->uri = self::getCurrentUri();
 	}
