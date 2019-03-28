@@ -35,7 +35,33 @@ class View
             include($file);
             $file_content = ob_get_contents();
             ob_end_clean();
-            return $file_content;
+            return self::sanitize_output($file_content);
         }
+    }
+
+    public static function sanitize_output($buffer) 
+    {
+        if (!App::inProduction())
+        {
+            return $buffer;
+        }
+
+        $search = array(
+            '/\>[^\S ]+/s',     // strip whitespaces after tags, except space
+            '/[^\S ]+\</s',     // strip whitespaces before tags, except space
+            '/(\s)+/s',         // shorten multiple whitespace sequences
+            '/<!--(.|\s)*?-->/' // Remove HTML comments
+        );
+    
+        $replace = array(
+            '>',
+            '<',
+            '\\1',
+            ''
+        );
+    
+        $buffer = preg_replace($search, $replace, $buffer);
+    
+        return $buffer;
     }
 }

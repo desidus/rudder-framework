@@ -15,11 +15,13 @@ class Request
 	 */
 	function __construct()
 	{
+		header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
+		
 		$this->method = $_SERVER['REQUEST_METHOD'];
 		
 		$this->ajax = 
 			( isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
-			|| preg_match('/application\/json/i', $_SERVER['HTTP_ACCEPT']) 
+			|| ( isset($_SERVER['HTTP_ACCEPT']) && preg_match('/application\/json/i', $_SERVER['HTTP_ACCEPT']) )
 		;
 		
 		$this->url = self::getCurrentUrl();
@@ -40,6 +42,21 @@ class Request
 		$uri = substr($_SERVER['REQUEST_URI'], strlen($basepath));
 		if (strstr($uri, '?')) $uri = substr($uri, 0, strpos($uri, '?'));
 		return '/' . trim($uri, '/');
+	}
+
+	public function input($keys = [])
+	{
+		return is_string($keys) ? Input::get($keys) : Input::only($only);
+	}
+	
+	public function hasFile($key)
+	{
+		return Input::hasFile($key);
+	}
+
+	public function wantJSON()
+	{
+		return $this->ajax;
 	}
 
 	/**

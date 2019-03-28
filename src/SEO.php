@@ -25,7 +25,7 @@ class SEO
 
         foreach ($seo as $regexp => $callback) 
         {
-            if (preg_match($regexp, '')) 
+            if (!self::isRegularExpression($regexp) || preg_match($regexp, '')) 
             {
                 if ($regexp == $uri) 
                 {
@@ -37,9 +37,9 @@ class SEO
                 $matches = [];
                 preg_match($regexp, $uri, $matches, PREG_OFFSET_CAPTURE);
                 
-                if (count($matches) && !empty($matches[1][0])) 
+                if (count($matches) && !empty($matches)) 
                 {
-                    return $callback($matches[1][0]);
+                    return call_user_func_array($callback, $matches);
                 }
             }
         }
@@ -50,6 +50,8 @@ class SEO
         return [];
     }
 
-    
+    private static function isRegularExpression($string) {
+        return @preg_match($string, '') !== FALSE;
+    }
 
 }
