@@ -6,6 +6,11 @@ class Input
 {
     private static $data = null;
 
+    /**
+     * Setta tutti i dati in input della richiesta
+     *
+     * @return Array
+     */
     private static function getRequestData()
     {
         if (!self::$data)
@@ -19,12 +24,10 @@ class Input
                     break;
                 case "POST":
                     self::$data = count($_POST) > 0 ? $_POST : json_decode(file_get_contents('php://input'), true);
-
                     if (count($_FILES) > 0) 
                     {
                         self::$data = array_merge(self::$data, $_FILES);
                     }
-
                     break;
             }
         }
@@ -34,11 +37,22 @@ class Input
         return self::$data;
     }
 
+    /**
+     * Ritorna tutti i dati della richiesta
+     *
+     * @return Array
+     */
     public static function all()
     {
         return self::getRequestData();
     }
 
+    /**
+     * Ritorna solo i dati in input specificati
+     *
+     * @param Array $keys
+     * @return Array
+     */
     public static function only($keys)
     {
         $data = self::all();

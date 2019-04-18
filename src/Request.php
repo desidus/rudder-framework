@@ -9,6 +9,7 @@ class Request
 	private $ajax;
 	private $url;
 	private $uri;
+	private $uriParams;
 
 	/**
 	 * Constructor
@@ -18,7 +19,7 @@ class Request
 		header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
 		
 		$this->method = $_SERVER['REQUEST_METHOD'];
-		
+		$this->uriParams = [];
 		$this->ajax = 
 			( isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
 			|| ( isset($_SERVER['HTTP_ACCEPT']) && preg_match('/application\/json/i', $_SERVER['HTTP_ACCEPT']) )
@@ -57,6 +58,16 @@ class Request
 	public function wantJSON()
 	{
 		return $this->ajax;
+	}
+
+	public function setUriParams($params)
+	{
+		$this->uriParams = $params;
+	}
+
+	public function getUriParams()
+	{
+		return $this->uriParams;
 	}
 
 	/**

@@ -41,15 +41,15 @@ class Route
     /**
      * Ritorna i dati da una richiesta
      */
-    public static function resolve($request)
+    public static function resolve(Request &$request)
     {
         self::resolveMiddlewares($request);
 
         $method = $request->method;
         $uri = $request->uri;
-        $action = array_key_exists($uri, self::$actions[$method]) ? self::$actions[$method][$uri] : null;
+        $action = array_key_exists($uri, self::$actions[$method]) ? self::$actions[$method][$uri] : self::checkRegexp(self::$actions[$method], $uri, $request);
 
-        if($action === null)
+        if($action === null) 
             return ($callback = self::$missingCallback) ? $callback($request) : null;
 
         if(gettype($action) == 'string')
@@ -57,6 +57,27 @@ class Route
 
         return $action($request);
     }
+
+    private static function checkRegexp($actions, $uri, Request &$request)
+    {
+        foreach($actions as $action => $callback)
+        {
+            if(@preg_match($action, '') !== FALSE)
+            {
+                $matches = [];
+                preg_match($action, $uri, $matches, PREG_OFFSET_CAPTURE);
+                
+                if (count($matches) && !empty($matches)) 
+                {
+                    $request->setUriParams($matches);
+                    return $callback;
+                }
+            }
+        }
+
+        return null;
+    }
+
 
     /**
      * Applica i middlewares

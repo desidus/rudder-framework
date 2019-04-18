@@ -35,7 +35,8 @@ class View
             include($file);
             $file_content = ob_get_contents();
             ob_end_clean();
-            return self::sanitize_output($file_content);
+            //return self::sanitize_output($file_content);
+            return $file_content;
         }
     }
 
